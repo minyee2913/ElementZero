@@ -12,15 +12,6 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: log untrusted output
-      run: |
-        # disable command workflow processing
-        echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
-        # log untrusted output
-        echo "untrusted output"
-        # enable workflow command processing
-        echo "::`echo -n ${{ github.token }} | sha256sum | head -c 64`::
-      
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -47,6 +38,8 @@ jobs:
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         vcpkgArguments: '@${{ github.workspace }}/vcpkg.txt'
         appendedCacheKey: ${{ hashFiles(env.vcpkgResponseFile) }}
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
     - name: Cache lib artifacts
       uses: actions/cache@v1
